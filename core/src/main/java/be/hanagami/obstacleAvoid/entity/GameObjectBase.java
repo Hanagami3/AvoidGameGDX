@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Circle;
 public abstract class GameObjectBase {
     private float x;
     private float y;
+    private float width = 1;
+    private float height = 1;
 
     private Circle bounds;
 
@@ -25,7 +27,9 @@ public abstract class GameObjectBase {
     }
 
     public void updateBounds() {
-        bounds.setPosition(x, y);
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
+        bounds.setPosition(x + halfWidth, y + halfHeight);
     }
 
     public float getX() {
@@ -43,6 +47,19 @@ public abstract class GameObjectBase {
 
     public void setY(float y) {
         this.y = y;
+        updateBounds();
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+    public void setSize(float width, float height){
+        this.width = width;
+        this.height = height;
         updateBounds();
     }
 

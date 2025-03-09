@@ -1,6 +1,7 @@
 package be.hanagami.obstacleAvoid.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -68,6 +69,7 @@ public class GameRenderer implements Disposable {
     }
 
     private void renderUI() {
+        hudViewport.apply();
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
 
@@ -95,10 +97,15 @@ public class GameRenderer implements Disposable {
     }
 
     private void renderDebug() {
+        viewport.apply();
         renderer.setProjectionMatrix(camera.combined);
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
         drawDebug();
+
+//        float lineX = Obstacle.SIZE / 2f;
+//        renderer.setColor(Color.BLUE);
+//        renderer.line(lineX, 0, lineX, GameConfig.WORLD_HEIGHT);
 
         renderer.end();
 

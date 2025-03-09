@@ -3,6 +3,8 @@ package be.hanagami.obstacleAvoid.screen;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 import be.hanagami.obstacleAvoid.config.DifficultyLevel;
 import be.hanagami.obstacleAvoid.config.GameConfig;
@@ -21,6 +23,7 @@ public class GameController {
     private int score;
     private int displayScore;
     private DifficultyLevel difficultyLevel = DifficultyLevel.MEDIUM;
+    private Pool<Obstacle> obstaclePool;
 
 
     public GameController() {
@@ -29,22 +32,27 @@ public class GameController {
 
     private void init() {
         player = new Player();
+
         float startPlayerX = GameConfig.WORLD_WIDTH / 2f;
         float startPlayerY = 1;
 
         player.setPosition(startPlayerX, startPlayerY);
+
+        obstaclePool = Pools.get(Obstacle.class, 40);
     }
 
     private void createNewObstacle(float delta) {
         obstacleTimer += delta;
 
         if (obstacleTimer >= GameConfig.OBSTACLE_SPAWN_TIME){
-            float min = 0f;
-            float max = GameConfig.WORLD_WIDTH;
+            float min = Obstacle.SIZE / 2f;
+            float max = GameConfig.WORLD_WIDTH - Obstacle.SIZE / 2f;
+
+
             float obstacleX = MathUtils.random(min, max);
             float obstacleY = GameConfig.WORLD_HEIGHT ;
 
-            Obstacle obstacle = new Obstacle();
+            Obstacle obstacle = obstaclePool.obtain();
             obstacle.setYSpeed(difficultyLevel.getObstacleSpeed());
             obstacle.setPosition(obstacleX, obstacleY);
 
@@ -84,6 +92,20 @@ public class GameController {
             obstacle.update();
         }
         createNewObstacle(delta);
+        removePassedObstacles();
+    }
+
+    private void removePassedObstacles() {
+        if (obstacles.size > 0){
+            Obstacle first = obstacles.first();
+
+            float minObstacleY =  - Obstacle.SIZE;
+
+            if (first.getY() < minObstacleY){
+                obstacles.removeValue(first, true);
+                obstaclePool.free(first);
+            }
+        }
     }
 
     private void updateScore(float delta) {
@@ -132,7 +154,8 @@ public class GameController {
     }
 
     private boolean isGameOver() {
-        return lives <= 0;
+        return false;
+        //return lives <= 0;
     }
 
     public Player getPlayer() {

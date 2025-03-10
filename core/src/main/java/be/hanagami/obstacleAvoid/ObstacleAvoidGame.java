@@ -6,8 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Logger;
 
-import be.hanagami.obstacleAvoid.screen.GameScreen;
-import be.hanagami.obstacleAvoid.screen.GameScreenOld;
+import be.hanagami.obstacleAvoid.screen.game.GameScreen;
+import be.hanagami.obstacleAvoid.screen.loading.LoadingScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class ObstacleAvoidGame extends Game {
@@ -17,9 +17,12 @@ public class ObstacleAvoidGame extends Game {
     @Override
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
+
         assetManager = new AssetManager();
         assetManager.getLogger().setLevel(Logger.DEBUG);
-        setScreen(new GameScreen(this));
+
+        setScreen(new LoadingScreen(this));
+
     }
 
     @Override
@@ -30,4 +33,5 @@ public class ObstacleAvoidGame extends Game {
     public AssetManager getAssetManager() {
         return assetManager;
     }
+
 }

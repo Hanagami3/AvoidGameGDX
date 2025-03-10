@@ -1,14 +1,15 @@
-package be.hanagami.obstacleAvoid.screen;
+package be.hanagami.obstacleAvoid.screen.game;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Logger;
 
 import be.hanagami.obstacleAvoid.ObstacleAvoidGame;
 import be.hanagami.obstacleAvoid.assets.AssetDescriptors;
-import be.hanagami.obstacleAvoid.entity.Obstacle;
 
 public class GameScreen implements Screen {
+
+    private static final Logger log = new Logger (GameScreen.class.getName(), Logger.DEBUG);
 
     private final ObstacleAvoidGame game;
     private final AssetManager assetManager;
@@ -23,17 +24,20 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
-        assetManager.load(AssetDescriptors.FONT);
-        assetManager.load(AssetDescriptors.BACKGROUND);
-        assetManager.load(AssetDescriptors.OBSTACLE);
-        assetManager.load(AssetDescriptors.PLAYER);
-
-        assetManager.finishLoading();
+        log.debug("show");
+//        waitMillis(800);
+//        assetManager.load(AssetDescriptors.FONT);
+//        waitMillis(800);
+//        assetManager.load(AssetDescriptors.GAME_PLAY);
+//        waitMillis(800);
+//
+//
+//        assetManager.finishLoading();
 
         controller = new GameController();
         renderer = new GameRenderer(controller, assetManager);
     }
+
 
     @Override
     public void render(float delta) {
@@ -58,11 +62,19 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
+        log.debug("hide");
         dispose();
     }
 
     @Override
     public void dispose() {
         renderer.dispose();
+    }
+    private static void waitMillis(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

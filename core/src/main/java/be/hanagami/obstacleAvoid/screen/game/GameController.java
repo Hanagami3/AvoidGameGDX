@@ -1,4 +1,4 @@
-package be.hanagami.obstacleAvoid.screen;
+package be.hanagami.obstacleAvoid.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Logger;
 
 import be.hanagami.obstacleAvoid.ObstacleAvoidGame;
-import be.hanagami.obstacleAvoid.assets.AssetDescriptors;
 
 public class GameScreen implements Screen {
 
@@ -13,6 +12,7 @@ public class GameScreen implements Screen {
 
     private final ObstacleAvoidGame game;
     private final AssetManager assetManager;
+
     private GameController controller;
     private GameRenderer renderer;
 
@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 //        assetManager.finishLoading();
 
         controller = new GameController();
-        renderer = new GameRenderer(controller, assetManager);
+        renderer = new GameRenderer(game.getBatch(), assetManager, controller);
     }
 
 

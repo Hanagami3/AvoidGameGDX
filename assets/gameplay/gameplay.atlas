@@ -1,0 +1,26 @@
+gameplay.png
+size: 480, 848
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+player
+  rotate: false
+  xy: 0, 0
+  size: 48, 42
+  orig: 48, 42
+  offset: 0, 0
+  index: -1
+obstacle
+  rotate: false
+  xy: 48, 0
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+background
+  rotate: false
+  xy: 0, 48
+  size: 480, 800
+  orig: 480, 800
+  offset: 0, 0
+  index: -1

@@ -3,29 +3,33 @@ package be.hanagami.obstacleAvoid.screen.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.function.BiConsumer;
+
 import be.hanagami.obstacleAvoid.ObstacleAvoidGame;
 import be.hanagami.obstacleAvoid.assets.AssetDescriptors;
 import be.hanagami.obstacleAvoid.assets.RegionNames;
+import be.hanagami.obstacleAvoid.commun.GameManager;
 import be.hanagami.obstacleAvoid.config.GameConfig;
-import be.hanagami.obstacleAvoid.screen.game.GameScreen;
 import be.hanagami.obstacleAvoid.util.GdxUtils;
 
-public class MenuScreen extends ScreenAdapter {
+public class HighScoreScreen extends ScreenAdapter {
 
-    private static final Logger log = new Logger (MenuScreen.class.getName(), Logger.DEBUG);
+    private static final Logger log = new Logger (HighScoreScreen.class.getName(), Logger.DEBUG);
 
     private final ObstacleAvoidGame game;
     private final AssetManager assetManager;
@@ -33,7 +37,7 @@ public class MenuScreen extends ScreenAdapter {
     private Viewport viewport;
     private Stage stage;
 
-    public MenuScreen(ObstacleAvoidGame game) {
+    public HighScoreScreen(ObstacleAvoidGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
     }
@@ -45,65 +49,61 @@ public class MenuScreen extends ScreenAdapter {
 
         Gdx.input.setInputProcessor(stage);
 
-        initUi();
+        createUi();
     }
 
-    private void initUi() {
+    private void createUi() {
         Table table = new Table();
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetDescriptors.GAME_PLAY);
         TextureAtlas uiAtlas = assetManager.get(AssetDescriptors.UI);
+        BitmapFont font = assetManager.get(AssetDescriptors.FONT);
 
-        TextureRegion backgroundRegion = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
+        TextureRegion background = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
         TextureRegion panelRegion = uiAtlas.findRegion(RegionNames.PANEL);
 
-        table.setBackground(new TextureRegionDrawable(backgroundRegion));
+        TextureRegion backRegion = uiAtlas.findRegion(RegionNames.BACK);
+        TextureRegion backPressedRegion = uiAtlas.findRegion(RegionNames.BACK_PRESSED);
 
-        ImageButton playButton = createButton(uiAtlas, RegionNames.PLAY, RegionNames.PLAY_PRESSED);
-        playButton.addListener(new ChangeListener(){
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+
+        table.setBackground(new TextureRegionDrawable(background));
+
+        Label highScoreText = new Label("HIGHSCORE", labelStyle);
+
+        String highScoreString = GameManager.INSTANCE.getHighScoreString();
+        Label highScoreLabel = new Label(highScoreString, labelStyle);
+
+        ImageButton backButton = new ImageButton(
+            new TextureRegionDrawable(backRegion),
+            new TextureRegionDrawable(backPressedRegion)
+        );
+
+        backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                play();
-            }
-        });
-//
-        ImageButton highScoreButton = createButton(uiAtlas, RegionNames.HIGH_SCORE, RegionNames.HIGH_SCORE_PRESSED);
-        highScoreButton.addListener(new ChangeListener(){
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                showHighScore();
+                back();
             }
         });
 
-        ImageButton optionsButton = createButton(uiAtlas, RegionNames.OPTIONS, RegionNames.OPTIONS_PRESSED);
-        optionsButton.addListener(new ChangeListener(){
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                showOptions();
-            }
-        });
+        Table contentTable = new Table();
+        contentTable.defaults().pad(20);
+        contentTable.setBackground(new TextureRegionDrawable(panelRegion));
 
+        contentTable.add(highScoreText).row();
+        contentTable.add(highScoreLabel).row();
+        contentTable.add(backButton);
 
-        Table buttonTable = new Table();
-        buttonTable.defaults().pad(20);
-        buttonTable.setBackground(new TextureRegionDrawable(panelRegion));
-
-        buttonTable.add(playButton).row();
-        buttonTable.add(highScoreButton).row();
-        buttonTable.add(optionsButton).row();
-
-        buttonTable.center();
-
-        table.add(buttonTable);
+        table.add(contentTable);
         table.center();
         table.setFillParent(true);
         table.pack();
 
         stage.addActor(table);
+
+
     }
-
-
-
 
     @Override
     public void render(float delta) {
@@ -113,11 +113,11 @@ public class MenuScreen extends ScreenAdapter {
         stage.draw();
     }
 
-
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }
+
 
     @Override
     public void hide() {
@@ -129,27 +129,8 @@ public class MenuScreen extends ScreenAdapter {
         stage.dispose();
     }
 
-    private void play() {
-        log.debug("play()");
-        game.setScreen(new GameScreen(game));
-    }
-    private void showHighScore() {
-        log.debug("showHighScore()");
-        game.setScreen(new HighScoreScreen(game));
-    }
-
-    private void showOptions() {
-        log.debug("showOption()");
-    }
-
-    private static ImageButton createButton(TextureAtlas atlas, String upRegionName, String downRegionName){
-        TextureRegion upRegion = atlas.findRegion(upRegionName);
-        TextureRegion downRegion = atlas.findRegion(downRegionName);
-
-        return new ImageButton(
-            new TextureRegionDrawable(upRegion),
-            new TextureRegionDrawable(downRegion)
-        );
-
+    private void back() {
+        log.debug("back()");
+        game.setScreen(new MenuScreen(game));
     }
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
+import be.hanagami.obstacleAvoid.commun.GameManager;
 import be.hanagami.obstacleAvoid.config.DifficultyLevel;
 import be.hanagami.obstacleAvoid.config.GameConfig;
 import be.hanagami.obstacleAvoid.entity.Background;
@@ -85,6 +86,7 @@ public class GameController {
 
             if (isGameOver()) {
                 log.debug("GAME OVER!!!");
+                GameManager.INSTANCE.updateHighScore(score);
             } else {
                 restart();
             }

@@ -102,7 +102,6 @@ public class GameRenderer implements Disposable {
 
         renderDebug();
 
-        //
         // System.out.println("totalRenderCalls= " + batch.totalRenderCalls);
     }
 

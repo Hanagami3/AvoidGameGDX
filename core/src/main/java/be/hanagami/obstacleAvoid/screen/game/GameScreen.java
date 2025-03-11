@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Logger;
 
 import be.hanagami.obstacleAvoid.ObstacleAvoidGame;
+import be.hanagami.obstacleAvoid.screen.menu.MenuScreen;
 
 public class GameScreen implements Screen {
 
@@ -43,6 +44,12 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         controller.update(delta);
         renderer.render(delta);
+
+        // le faire ici pour être certain que la frame est terminée avec les update et donc éviter crash!!
+        //ou switcher vers un autre écran alors que la frame n'est pas terminée
+        if (controller.isGameOver()){
+            game.setScreen(new MenuScreen(game));
+        }
     }
 
     @Override

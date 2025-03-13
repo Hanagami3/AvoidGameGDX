@@ -12,6 +12,7 @@ import be.hanagami.obstacleAvoid.ObstacleAvoidGame;
 import be.hanagami.obstacleAvoid.assets.AssetDescriptors;
 import be.hanagami.obstacleAvoid.config.GameConfig;
 import be.hanagami.obstacleAvoid.screen.game.GameScreen;
+import be.hanagami.obstacleAvoid.screen.menu.MenuScreen;
 import be.hanagami.obstacleAvoid.util.GdxUtils;
 
 public class LoadingScreen extends ScreenAdapter {
@@ -47,6 +48,9 @@ public class LoadingScreen extends ScreenAdapter {
 
         assetManager.load(AssetDescriptors.FONT);
         assetManager.load(AssetDescriptors.GAME_PLAY);
+//        assetManager.load(AssetDescriptors.UI);
+        assetManager.load(AssetDescriptors.UI_SKIN);
+        assetManager.load(AssetDescriptors.HIT_SOUND);
     }
 
     @Override
@@ -65,7 +69,8 @@ public class LoadingScreen extends ScreenAdapter {
         //log.debug("after end");
 
         if (changeScreen){
-            game.setScreen(new GameScreen(game));
+//            game.setScreen(new GameScreen(game));
+            game.setScreen(new MenuScreen(game));
         }
     }
 
@@ -88,9 +93,8 @@ public class LoadingScreen extends ScreenAdapter {
     }
 
     private void update(float delta){
-        waitMillis(400);
-
-        progress = assetManager.getProgress();
+       // waitMillis(400);
+         progress = assetManager.getProgress();
 
         if (assetManager.update()){
             waitTime -= delta;

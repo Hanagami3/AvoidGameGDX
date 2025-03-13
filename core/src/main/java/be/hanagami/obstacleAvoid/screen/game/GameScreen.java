@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 //
 //        assetManager.finishLoading();
 
-        controller = new GameController();
+        controller = new GameController(game);
         renderer = new GameRenderer(game.getBatch(), assetManager, controller);
     }
 

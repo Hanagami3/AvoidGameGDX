@@ -2,12 +2,16 @@ package be.hanagami.obstacleAvoid.screen.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
+import be.hanagami.obstacleAvoid.ObstacleAvoidGame;
+import be.hanagami.obstacleAvoid.assets.AssetDescriptors;
 import be.hanagami.obstacleAvoid.commun.GameManager;
 import be.hanagami.obstacleAvoid.config.DifficultyLevel;
 import be.hanagami.obstacleAvoid.config.GameConfig;
@@ -28,11 +32,18 @@ public class GameController {
     private int score;
     private int displayScore;
     private Pool<Obstacle> obstaclePool;
+    private Sound hit;
+
+    private final ObstacleAvoidGame game;
+    private final AssetManager assetManager;
+
     private final float startPlayerX = (GameConfig.WORLD_WIDTH - GameConfig.PLAYER_SIZE) / 2f;
     private final float startPlayerY = 1 - GameConfig.PLAYER_SIZE / 2f;
 
 
-    public GameController() {
+    public GameController(ObstacleAvoidGame game) {
+        this.game = game;
+        assetManager = game.getAssetManager();
         init();
     }
 
@@ -46,6 +57,8 @@ public class GameController {
         background = new Background();
         background.setPosition(0, 0);
         background.setSize(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT);
+
+        hit = assetManager.get(AssetDescriptors.HIT_SOUND);
     }
 
     private void createNewObstacle(float delta) {
@@ -71,7 +84,6 @@ public class GameController {
 
     public void update(float delta) {
         if (isGameOver()) {
-            log.debug("GAME OVER!!");
             return;
         }
 
@@ -158,6 +170,7 @@ public class GameController {
         for (Obstacle obstacle : obstacles) {
             if (obstacle.isNotHit() &&
                 obstacle.isPlayerColliding(player)) {
+                hit.play();
                 return true;
             }
         }
